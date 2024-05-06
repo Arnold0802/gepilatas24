@@ -10,8 +10,20 @@ def dominant_color(cell):
     dominant = colors[count.argmax()]
     return dominant
 
+def equalize_histogram_color(image):
+    # BGR-ből YUV-ra konvertálás
+    yuv_img = cv2.cvtColor(image, cv2.COLOR_BGR2YUV)
+    # Hisztogram egyenlítés a Y csatornán
+    yuv_img[:,:,0] = cv2.equalizeHist(yuv_img[:,:,0])
+    # Visszakonvertálás BGR-be
+    equalized_img = cv2.cvtColor(yuv_img, cv2.COLOR_YUV2BGR)
+    return equalized_img
+
+
 image = cv2.imread('minta1.png')
+image = equalize_histogram_color(image)
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
 
 # Gaussian Blur
 blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -20,7 +32,8 @@ blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 #blurred = cv2.medianBlur(gray, 5)
 
 
-_, thresholded = cv2.threshold(blurred, 240, 255, cv2.THRESH_BINARY_INV)
+#_, thresholded = cv2.threshold(blurred, 240, 255, cv2.THRESH_BINARY_INV)
+thresholded = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
 contours, hierarchy = cv2.findContours(thresholded, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
