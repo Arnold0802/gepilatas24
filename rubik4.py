@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-i=2
+i=1
 minimum_area = 100
 #for i in range (1,6):
 
@@ -46,7 +46,7 @@ img_height, img_width = bw_image.shape[:2]
 
 sorted_contours = sorted(square_contours, key=cv2.contourArea, reverse=True)
 # Az első legnagyobb kizárása, ha az közel áll a kép méretéhez
-for contour in sorted_contours[0:]:  # Az első elem kihagyása
+for contour in sorted_contours[0:]:  # ha 1, az első elem kihagyása
     x, y, w, h = cv2.boundingRect(contour)
     # Itt végezheted el a további szűréseket és feldolgozást
     cv2.drawContours(bw_image, [contour], -1, (0, 255, 0), 2)
@@ -55,7 +55,7 @@ for contour in sorted_contours[0:]:  # Az első elem kihagyása
 
 #largest_contour = max(square_contours, key=cv2.contourArea)
 #x, y, w, h = cv2.boundingRect(largest_contour)
-cropped_image = bw_image[y:y+h, x:x+w]
+cropped_image = image[y:y+h, x:x+w]
 cv2.imshow('Kivágott kép', cropped_image)
 #cv2.imwrite('kivagott_kep.jpg', cropped_image)
 cv2.waitKey(0)
