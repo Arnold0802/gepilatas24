@@ -1,16 +1,35 @@
 import cv2
 import numpy as np
 
+#def dominant_color(cell):
+#    # A kép átalakítása 2D-s tömbbé, ahol minden sor egy képpont
+#    data = np.reshape(cell, (-1, 3))
+#    
+#    # Leggyakoribb szín keresése
+#    colors, count = np.unique(data, axis=0, return_counts=True)
+#    dominant = colors[count.argmax()]
+#    return dominant
+
 def dominant_color(cell):
     # A kép átalakítása 2D-s tömbbé, ahol minden sor egy képpont
     data = np.reshape(cell, (-1, 3))
     
-    # Leggyakoribb szín keresése
+    # Kizárjuk a fekete színt a számításból
+    # Fekete szín: [0, 0, 0], az összehasonlítás egy kis küszöbértékkel történik, ha zajos a kép
+    non_black = np.all(data > [30, 30, 30], axis=1)  # Ahol az RGB értékek minden csatornán nagyobbak, mint 10
+    data = data[non_black]
+    
+    # Ellenőrizzük, van-e még elegendő adat
+    if data.size == 0:
+        return None  # Nincs nem fekete szín
+    
+    # Leggyakoribb szín keresése azok között, amelyek nem feketék
     colors, count = np.unique(data, axis=0, return_counts=True)
     dominant = colors[count.argmax()]
     return dominant
 
-i=5
+
+i=3
 minimum_area = 100
 #for i in range (1,6):
 
@@ -26,8 +45,9 @@ _, thresholded_image = cv2.threshold(gray_image, 50, 255, cv2.THRESH_BINARY_INV)
 
 contours, _ = cv2.findContours(thresholded_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-for contour in contours:
-    cv2.drawContours(image, [contour], -1, (0, 255, 0), 2)
+#nem akarom rárajzolni a kész képre a kontúrokat
+#for contour in contours: 
+#    cv2.drawContours(image, [contour], -1, (0, 255, 0), 2)
 
 # Megjelenítés
 cv2.imshow('Fekete területek kijelölve', image)
@@ -39,11 +59,29 @@ if contours:
 else:
     largest_contour = None
 
+#maszk készítése, hogy a kockán kívül eső részek legyenek feketék
+height, width = image.shape[:2]
+mask = np.zeros((height, width), dtype=np.uint8)
+cv2.drawContours(mask, contours, -1, (255), thickness=cv2.FILLED)
+
+cv2.imshow('Maszk', mask)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#maszk alkalmazása a képre
+
+masked_image = cv2.bitwise_and(image, image, mask=mask)
+
+cv2.imshow('Maszkolt kép', masked_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
 # Ha van érvényes kontúr
 if largest_contour is not None:
     x, y, w, h = cv2.boundingRect(largest_contour)
     # Kivágás
-    cropped_image = image[y:y+h, x:x+w]
+    cropped_image = masked_image[y:y+h, x:x+w]
     cv2.imshow('Kivágott kép', cropped_image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
