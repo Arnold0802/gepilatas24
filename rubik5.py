@@ -28,6 +28,11 @@ def dominant_color(cell):
     dominant = colors[count.argmax()]
     return dominant
 
+def adjust_gamma(image, gamma=1.5):  # gamma < 1 sötétíti, gamma > 1 világosítja a képet
+    invGamma = 1.0 / gamma
+    table = np.array([((i / 255.0) ** invGamma) * 255 for i in np.arange(0, 256)]).astype("uint8")
+    return cv2.LUT(image, table)
+
 
 i=3
 minimum_area = 100
@@ -88,6 +93,41 @@ if largest_contour is not None:
 
 #javítani az oldalarányokon?
 #(erre nem találtam megoldást)
+
+#új lépés, színek élénkítése (cropped image-el megyek tovább)
+result = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2HSV)  # HSV színtérbe konvertálás
+result[:, :, 1] = cv2.add(result[:, :, 1], 50)  # Szín telítettségének növelése
+result = cv2.cvtColor(result, cv2.COLOR_HSV2BGR)  # Visszaalakítás BGR-be
+
+cv2.imshow('Enhanced Colors', result)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
+
+hsv = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2HSV)
+hsv[:, :, 2] = cv2.equalizeHist(hsv[:, :, 2])  # V csatorna (fényerő) hisztogram kiegyenlítése
+enhanced_img = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+
+cv2.imshow('Histogram Equalized', enhanced_img)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
+
+gamma_corrected = adjust_gamma(cropped_image, gamma=1.5)
+
+cv2.imshow('Gamma Corrected', gamma_corrected)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
+
+lab = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2LAB)  # LAB színtérbe konvertálás
+l, a, b = cv2.split(lab)
+cl = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))  # Kontraszt korlátozott adaptív hisztogram kiegyenlítő
+l = cl.apply(l)
+updated_lab = cv2.merge((l, a, b))
+enhanced_img = cv2.cvtColor(updated_lab, cv2.COLOR_LAB2BGR)
+
+cv2.imshow('Contrast Enhanced', enhanced_img)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
+
 
 #9 részre osztás, domináns szín keresés
 
