@@ -1,0 +1,18 @@
+eddigi működés (rubik6.py): 
+
+1.betöltök egy rubik kockás fényképet
+2.fekete fehér inverz kép készítése, hogy könnyebb legyen megtalálni a kontúrt 
+(itt van 1 kép amin nem működik jól, ezt még át akarom dolgozni olyanra, hogy a szélső értékek alapján levágni azokat a részeket amik nem kellenek)
+3.kontúr megrajzolása a fekete fehér kép alapján az eredeti képre
+4. +1 lépést raktam ide, hogy a kontúron kívül eső részre készítek egy maszkot, ez már igazából fölöslegessé vált mióta más módon próbálom a színeket megállapítani.
+5. maszkolt színes kép (ezt a zöld kontúr berajzolást ki szoktam kapcsolni)
+6. rubik kocka kivágása, folyatás a kisebb képpel
+7. színek manipulálása, itt sok próbálgatás volt, de még mindig nem az igazi (gamma, color enhance, blur)
+8. 3x3-as területekre osztás (a kis kontúrok megkeresése nem akart működni)
+9. 9 kicsi képre darabolás, a kicsi képeknek egy adott területét még kivágom a szín megállapításához
+10. szín megállapítás még nem működik jól.
+
+11. ha végre jó lesz a színek megállapítása, akkor lehet folytatni azzal, hogy a kocka minden oldalát feldolgozni 6 kép alapján
+
+összegzés: szerintem nem állok rosszul, finomítani kell a mostani lépéseket, de úgy gondolom közel állok a megoldáshoz
+

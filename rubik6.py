@@ -56,24 +56,30 @@ minimum_area = 100
 
 imgneve = "minta"+str(i)+".png"
 image = cv2.imread(imgneve)
+
+cv2.imshow('eredeti', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
 #90%os fekete megtartása, minden más fehér - > nem jött be, most 75% -> majdnem jó, 50% .... nehéz olyat találni ami minden mintára megfelelő (itt már inverz)
 gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 _, thresholded_image = cv2.threshold(gray_image, 50, 255, cv2.THRESH_BINARY_INV)
 #bw_image = cv2.bitwise_not(thresholded_image)
-#cv2.imshow('Csak 50% fekete', bw_image)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
+cv2.imshow('Csak 50% fekete', thresholded_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
 contours, _ = cv2.findContours(thresholded_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 #nem akarom rárajzolni a kész képre a kontúrokat
-#for contour in contours: 
-#    cv2.drawContours(image, [contour], -1, (0, 255, 0), 2)
+for contour in contours: 
+    cv2.drawContours(image, [contour], -1, (0, 255, 0), 2)
 
 # Megjelenítés
-#cv2.imshow('Fekete területek kijelölve', image)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()    
+cv2.imshow('Fekete területek kijelölve', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()    
 
 if contours:
     largest_contour = max(contours, key=cv2.contourArea)
@@ -85,9 +91,9 @@ height, width = image.shape[:2]
 mask = np.zeros((height, width), dtype=np.uint8)
 cv2.drawContours(mask, contours, -1, (255), thickness=cv2.FILLED)
 
-#cv2.imshow('Maszk', mask)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
+cv2.imshow('Maszk', mask)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
 #maszk alkalmazása a képre
 
@@ -150,7 +156,7 @@ else:
 
 gamma_corrected = adjust_gamma(cropped_image, gamma=1.9)
 
-#cv2.imshow('Gamma Corrected', gamma_corrected)
+cv2.imshow('Gamma Corrected', gamma_corrected)
 #cv2.waitKey(0)
 #cv2.destroyAllWindows()
 
@@ -160,7 +166,7 @@ enhanced_colors = cv2.cvtColor(gamma_corrected, cv2.COLOR_BGR2HSV)  # HSV színt
 enhanced_colors[:, :, 1] = cv2.add(enhanced_colors[:, :, 1], 50)  # Szín telítettségének növelése
 enhanced_colors = cv2.cvtColor(enhanced_colors, cv2.COLOR_HSV2BGR)  # Visszaalakítás BGR-be
 
-#cv2.imshow('Enhanced Colors', enhanced_colors)
+cv2.imshow('Enhanced Colors', enhanced_colors)
 #cv2.waitKey(0)
 #cv2.destroyAllWindows()
 
