@@ -42,7 +42,7 @@ def match_color(hue, saturation, value, color_bounds):
     return "unknown"  # If no color matches
 
 
-i=3
+i=2
 minimum_area = 100
 #for i in range (1,6):
 
@@ -58,9 +58,9 @@ cv2.destroyAllWindows()
 gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 _, thresholded_image = cv2.threshold(gray_image, 50, 255, cv2.THRESH_BINARY_INV)
 #bw_image = cv2.bitwise_not(thresholded_image)
-cv2.imshow('Csak 50% fekete', thresholded_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#cv2.imshow('Csak 50% fekete', thresholded_image)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
 
 contours, _ = cv2.findContours(thresholded_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -69,9 +69,9 @@ contours, _ = cv2.findContours(thresholded_image, cv2.RETR_EXTERNAL, cv2.CHAIN_A
 #    cv2.drawContours(image, [contour], -1, (0, 255, 0), 2)
 
 # Megjelenítés
-cv2.imshow('Fekete területek kijelölve', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()    
+#cv2.imshow('Fekete területek kijelölve', image)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()    
 
 if contours:
     largest_contour = max(contours, key=cv2.contourArea)
@@ -95,9 +95,9 @@ bottom_right_y = top_left_y + side_length
 #cv2.rectangle(image, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 255, 0), 2)
 
 # Kép megjelenítése
-cv2.imshow('Bounding Square', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#cv2.imshow('Bounding Square', image)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
 
 # Kivágjuk a bounding box által meghatározott részt
 cropped_image = image[y:y+h, x:x+w]
@@ -106,8 +106,8 @@ cropped_image = image[y:y+h, x:x+w]
 #cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)  # Bounding box kirajzolása az eredeti képre
 #cv2.imshow('Original Image with Bounding Box', image)
 cv2.imshow('Cropped Image', cropped_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
 
 #mivel már nem a 9 négyzet színeinek átlagát veszem, hanem egy megadott területből veszek mintát, fölöslegessé vált a maszkolás, így kivettem ezeket a lépéseket
 
@@ -115,7 +115,8 @@ cv2.destroyAllWindows()
 gamma_corrected = adjust_gamma(cropped_image, gamma=1.9)
 
 cv2.imshow('Gamma Corrected', gamma_corrected)
-
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 image = gamma_corrected # ezzel a szerkesztett képpel folytatom a feldolgozást
 
 # Kép dimenzióinak lekérdezése
@@ -193,9 +194,8 @@ for i in range(0,9):
     average_image = np.zeros_like(image, np.uint8)
     average_image[:] = average_color
 
-    #cv2.imshow('Average Color', average_image)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
+    #cv2.imshow(f'Average Color{i}', average_image)
+
 
 
     # Színek 
