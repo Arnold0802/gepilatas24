@@ -92,37 +92,21 @@ bottom_right_x = top_left_x + side_length
 bottom_right_y = top_left_y + side_length
 
 # Négyzet kirajzolása
-cv2.rectangle(image, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 255, 0), 2)
+#cv2.rectangle(image, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), (0, 255, 0), 2)
 
 # Kép megjelenítése
 cv2.imshow('Bounding Square', image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+# Kivágjuk a bounding box által meghatározott részt
+cropped_image = image[y:y+h, x:x+w]
 
-#maszk készítése, hogy a kockán kívül eső részek legyenek feketék
-height, width = image.shape[:2]
-mask = np.zeros((height, width), dtype=np.uint8)
-cv2.rectangle(mask, (top_left_x, top_left_y), (bottom_right_x, bottom_right_y), 255, -1)
-
-cv2.imshow('Maszk', mask)
+# Eredeti kép, bounding box és kivágott kép megjelenítése
+#cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)  # Bounding box kirajzolása az eredeti képre
+#cv2.imshow('Original Image with Bounding Box', image)
+cv2.imshow('Cropped Image', cropped_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-masked_image = cv2.bitwise_and(image, image, mask=mask)
-
-cv2.imshow('Maszkolt kép', masked_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-
-# Ha van érvényes kontúr
-if largest_contour is not None:
-    x, y, w, h = cv2.boundingRect(largest_contour)
-    # Kivágás
-    cropped_image = masked_image[y:y+h, x:x+w]
-    cv2.imshow('Kivágott kép', cropped_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-else:
-    Exception("nincs kontúr")
+#mivel már nem a 9 négyzet színeinek átlagát veszem, hanem egy megadott területből veszek mintát, fölöslegessé vált a maszkolás, így kivettem ezeket a lépéseket
