@@ -41,6 +41,40 @@ def match_color(hue, saturation, value, color_bounds):
             return color
     return "unknown"  # If no color matches
 
+def find_closest_color(color, colors):
+    min_distance = float('inf')
+    closest_color_name = None
+    for name, value in colors.items():
+        distance = np.linalg.norm(color - value)
+        if distance < min_distance:
+            min_distance = distance
+            closest_color_name = name
+    return closest_color_name
+
+############################################################################################################################################
+
+##########          HLS
+
+# RGB színek HLS színtérbe konvertálása
+def rgb_to_hls(rgb_color):
+    rgb_color = np.reshape(rgb_color, (1, 1, 3)).astype(np.uint8)
+    hls_color = cv2.cvtColor(rgb_color, cv2.COLOR_RGB2HLS)
+    return hls_color[0, 0, :]
+
+def find_closest_color_hls(color, colors_hls):
+    color_hls = rgb_to_hls(color)
+    min_distance = float('inf')
+    closest_color_name = None
+    
+    for name, value in colors_hls.items():
+        distance = np.linalg.norm(color_hls - value)
+        if distance < min_distance:
+            min_distance = distance
+            closest_color_name = name
+            
+    return closest_color_name
+
+############################################################################################################################################
 
 i=2
 minimum_area = 100
@@ -254,6 +288,32 @@ for i in range(0,9):
     print("detected color in BGR if-else is:", detected_color)
     #print("HSV values: ",average_hue," ",average_saturation," ",average_value)
     #print(f"The detected color in HSV is: {average_color_hsv}\n")
+
+
+    # Definiáljuk a 6 szín RGB kódját
+    colors = {
+        'red': np.array([255, 0, 0]),
+        'green': np.array([0, 255, 0]),
+        'blue': np.array([0, 0, 255]),
+        'yellow': np.array([255, 255, 0]),
+        'orange': np.array([255, 165, 0]),
+        'white': np.array([255, 255, 255])
+    }
+
+    # Színek HLS színtérben
+    colors_hls = {name: rgb_to_hls(color) for name, color in colors.items()}
+
+    # Például adott szín (RGB)
+    test_color = np.array([r, g, b])
+
+    # Legközelebbi szín megtalálása
+    closest_color = find_closest_color(test_color, colors)
+    print(f"RGB The closest color to {test_color} is {closest_color}")
+
+    closest_color_hls = find_closest_color_hls(test_color, colors_hls)
+    print(f"HLS The closest color to {test_color} in HLS space is {closest_color_hls}")
+
+
 
 
 
