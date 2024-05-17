@@ -76,16 +76,17 @@ def find_closest_color_hls(color, colors_hls):
 
 ############################################################################################################################################
 
-i=2
 minimum_area = 100
+
+#i=2
 #for i in range (1,6):
+#imgneve = "minta"+str(i)+".png"
 
-imgneve = "minta"+str(i)+".png"
-image = cv2.imread(imgneve)
+image = cv2.imread("1/sarga.jpg")
 
-cv2.imshow('eredeti', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#cv2.imshow('eredeti', image)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
 
 
 #90%os fekete megtartása, minden más fehér - > nem jött be, most 75% -> majdnem jó, 50% .... nehéz olyat találni ami minden mintára megfelelő (itt már inverz)
@@ -165,9 +166,9 @@ for i in range(1, 3):
     cv2.line(image, (i * width // 3, 0), (i * width // 3, height), (0, 255, 0), thickness=2)
 
 # Kép megjelenítése
-cv2.imshow('Divided Image', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#cv2.imshow('Divided Image', image)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
 
 # Kép mentése
 #cv2.imwrite('divided_image.jpg', image)
@@ -193,9 +194,11 @@ for i in range(3):  # Sorok
 
 
 for i in range(0,9):
+    if (i==3) or (i==6):
+        print("\n\n")
 
+    print(i+1)
 
-    print(i)
     image = cells[i]
     namestr= "cella"+str(i)
     cv2.imshow(namestr,image)
@@ -219,7 +222,7 @@ for i in range(0,9):
     average_color = np.average(average_color_per_row, axis=0)
     average_color = np.uint8(average_color)  # Konvertálás egész színekre
     print("Átlagos szín (BGR):", average_color)
-    print("B: ",average_color[0],"G: ",average_color[1],"R: ",average_color[2])
+    #print("B: ",average_color[0],"G: ",average_color[1],"R: ",average_color[2])
     b=average_color[0]
     g=average_color[1]
     r=average_color[2]
@@ -268,36 +271,36 @@ for i in range(0,9):
     detected_color1 = determine_color_bgr(average_color,color_bounds_bgr)
     max_bgr=max(average_color)
     min_bgr=min(average_color)
-    print("max, min:" , max_bgr, min_bgr)
+    #print("max, min:" , max_bgr, min_bgr)
     detected_color="unknown"
-    if ((max_bgr - min_bgr) < 30) and (min_bgr>100):
-        detected_color = "white"
-    if (b<(g//3)) and ((r-g)>30) and (g>70):
-        detected_color = "orange"
-    if (b<45) and (r>180) and (g>180) and ((g-r<15) and ((r-g<15))):
-        detected_color ="yellow"
-    if(b>94) and (g<(b//1.8)) and (r<(b//2)) and ((g-r<50) and ((r-g<50))):
-        detected_color ="blue"
-    if(r>60) and (b<(r//2)) and (g<(r//3)):
-        detected_color ="red"
-    if (g>30) and (r<(g//2)) and (b<(g//3)):
-        detected_color ="green"
+    #if ((max_bgr - min_bgr) < 30) and (min_bgr>100):
+    #    detected_color = "white"
+    #if (b<(g//3)) and ((r-g)>30) and (g>70):
+    #    detected_color = "orange"
+    #if (b<45) and (r>180) and (g>180) and ((g-r<15) and ((r-g<15))):
+    #    detected_color ="yellow"
+    #if(b>94) and (g<(b//1.8)) and (r<(b//2)) and ((g-r<50) and ((r-g<50))):
+    #    detected_color ="blue"
+    #if(r>60) and (b<(r//2)) and (g<(r//3)):
+    #    detected_color ="red"
+    #if (g>30) and (r<(g//2)) and (b<(g//3)):
+    #    detected_color ="green"
     
     
-    print("detected color in BGR_bounds is:", detected_color1)
-    print("detected color in BGR if-else is:", detected_color)
+    #print("detected color in BGR_bounds is:", detected_color1)
+    #print("detected color in BGR if-else is:", detected_color)
     #print("HSV values: ",average_hue," ",average_saturation," ",average_value)
     #print(f"The detected color in HSV is: {average_color_hsv}\n")
 
 
     # Definiáljuk a 6 szín RGB kódját
     colors = {
-        'red': np.array([255, 0, 0]),
-        'green': np.array([0, 255, 0]),
-        'blue': np.array([0, 0, 255]),
-        'yellow': np.array([255, 255, 0]),
-        'orange': np.array([255, 165, 0]),
-        'white': np.array([255, 255, 255])
+        'red': np.array([173, 44, 72]),
+        'green': np.array([38, 145, 92]),
+        'blue': np.array([16, 103, 168]),
+        'yellow': np.array([204, 193, 44]),
+        'orange': np.array([197, 129, 18]),
+        'white': np.array([216, 204, 200])
     }
 
     # Színek HLS színtérben
@@ -309,9 +312,9 @@ for i in range(0,9):
     # Legközelebbi szín megtalálása
     closest_color = find_closest_color(test_color, colors)
     print(f"RGB The closest color to {test_color} is {closest_color}")
-
-    closest_color_hls = find_closest_color_hls(test_color, colors_hls)
-    print(f"HLS The closest color to {test_color} in HLS space is {closest_color_hls}")
+#
+    #closest_color_hls = find_closest_color_hls(test_color, colors_hls)
+    #print(f"HLS The closest color to {test_color} in HLS space is {closest_color_hls}")
 
 
 
