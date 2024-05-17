@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 from collections import Counter
 from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import PatternFill
 
 
 def dominant_color(cell):
@@ -53,42 +55,13 @@ def find_closest_color(color, colors):
             closest_color_name = name
     return closest_color_name
 
-############################################################################################################################################
+def rgb_to_hex(rgb):
+    # Az rgb egy lista vagy tuple három decimális értékkel: [67, 154, 101]
+    return '{:02X}{:02X}{:02X}'.format(rgb[0], rgb[1], rgb[2])
 
-##########          HLS
-
-# RGB színek HLS színtérbe konvertálása
-def rgb_to_hls(rgb_color):
-    rgb_color = np.reshape(rgb_color, (1, 1, 3)).astype(np.uint8)
-    hls_color = cv2.cvtColor(rgb_color, cv2.COLOR_RGB2HLS)
-    return hls_color[0, 0, :]
-
-def find_closest_color_hls(color, colors_hls):
-    color_hls = rgb_to_hls(color)
-    min_distance = float('inf')
-    closest_color_name = None
-    
-    for name, value in colors_hls.items():
-        distance = np.linalg.norm(color_hls - value)
-        if distance < min_distance:
-            min_distance = distance
-            closest_color_name = name
-            
-    return closest_color_name
-
-############################################################################################################################################
 
 minimum_area = 100
 
-# Színek 
-color_bounds_bgr = {
-    'white': ((120, 120, 120), (255, 255, 255)),
-    'yellow': ((0, 150, 255), (30, 255, 255)),
-    'orange': ((0, 100, 200), (50, 180, 255)),
-    'blue': ((120, 0, 0), (255, 100, 100)),
-    'red': ((0, 0, 120), (75, 75, 255)),
-    'green': ((0, 120, 0), (100, 255, 100))
-}
 
 # Definiáljuk a 6 szín RGB kódját
 colors = {
@@ -306,3 +279,24 @@ print("Az 5. elemek minden oszlopból:", fifth_elements)
 #print("Egyedi elemek:", unique_elements)
 print("Minden szín csak egyszer szerepel:", is_unique)
 
+
+# Excel munkafüzet létrehozása
+wb = Workbook()
+ws = wb.active
+
+# Beállítjuk az első 12 sor magasságát 50 pixelre
+for i in range(1, 13):
+    ws.row_dimensions[i].height = 56.25
+
+# Beállítjuk az első 9 oszlop szélességét 50 pixelre
+for i in range(1, 10):
+    col_letter = get_column_letter(i)
+    ws.column_dimensions[col_letter].width = 10
+
+if is_unique:
+    print(1)
+
+    hex_color = rgb_to_hex(rgb)
+
+# Eredmények mentése Excel fájlba
+wb.save("results.xlsx")
