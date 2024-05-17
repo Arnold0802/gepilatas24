@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from collections import Counter
+from openpyxl import Workbook
 
 
 def dominant_color(cell):
@@ -304,3 +305,4 @@ is_unique = len(unique_elements) == len(fifth_elements)
 print("Az 5. elemek minden oszlopból:", fifth_elements)
 #print("Egyedi elemek:", unique_elements)
 print("Minden szín csak egyszer szerepel:", is_unique)
+
