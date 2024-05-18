@@ -1,0 +1,1 @@
+itt az egyik képen a középső cellát feketére színeztem, hogy teszteljem a gamma korrekció minden lépését

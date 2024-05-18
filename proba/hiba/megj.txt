@@ -1,0 +1,2 @@
+szerintem itt magas volt a gamma érték, ezért a az R és G értékek is magasabbak voltak a megállapított átlag színeknél, így lett citrom.
+az mondjuk itt is jól látható, hogy hogy az R és G értékek között sokkal nagyobb a különbség narancs esetén

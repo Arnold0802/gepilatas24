@@ -69,3 +69,4 @@ Színek száma:
 blue: 9white: 9yellow: 9red: 9green: 9orange: 9
 Az 5. elemek minden oszlopból: ['white' 'orange' 'green' 'blue' 'red' 'yellow']
 Minden szín csak egyszer szerepel: True
+Gamma értéke: 2.0999999999999996
