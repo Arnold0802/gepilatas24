@@ -1,0 +1,75 @@
+Teljes szín tömb:
+[[[ 75 167 103]
+  [222 157   5]
+  [224 224 222]
+  [223 210  53]
+  [217 218 220]
+  [218 218 217]
+  [219 206  48]
+  [219 206  36]
+  [215 215 215]]
+
+ [[232 218  79]
+  [211  76  91]
+  [233 164  13]
+  [218 153   6]
+  [218 152   5]
+  [217 151   6]
+  [200  81  90]
+  [  5 155  90]
+  [212 147   6]]
+
+ [[ 72 168 105]
+  [228 215  75]
+  [225 223 222]
+  [216 217 220]
+  [  7 157  99]
+  [ 17 163 101]
+  [213 214 217]
+  [211 211 214]
+  [  9 154  95]]
+
+ [[ 17 131 192]
+  [ 10 122 182]
+  [ 12 129 187]
+  [  8 119 180]
+  [  8 117 177]
+  [ 12 119 180]
+  [  9 124 185]
+  [  6 116 175]
+  [ 11 117 177]]
+
+ [[227 161   6]
+  [207  87  95]
+  [208  84  95]
+  [215 151   6]
+  [200  41  75]
+  [199  44  75]
+  [ 71 162 100]
+  [198  42  74]
+  [200  43  76]]
+
+ [[233 166   7]
+  [226 226 224]
+  [236 223  91]
+  [ 48 164 100]
+  [225 212  40]
+  [224 211  31]
+  [199  48  76]
+  [  9 156  93]
+  [217 204  11]]]
+[['green' 'orange' 'white' 'yellow' 'white' 'white' 'yellow' 'yellow'
+  'white']
+ ['yellow' 'red' 'orange' 'orange' 'orange' 'orange' 'red' 'green'
+  'orange']
+ ['green' 'yellow' 'white' 'white' 'green' 'green' 'white' 'white'
+  'green']
+ ['blue' 'blue' 'blue' 'blue' 'blue' 'blue' 'blue' 'blue' 'blue']
+ ['orange' 'red' 'red' 'orange' 'red' 'red' 'green' 'red' 'red']
+ ['orange' 'white' 'yellow' 'green' 'yellow' 'yellow' 'red' 'green'
+  'yellow']]
+Színek száma:
+green: 9orange: 9white: 9yellow: 9red: 9blue: 9
+Az 5. elemek minden oszlopból: ['white' 'orange' 'green' 'blue' 'red' 'yellow']
+Minden szín csak egyszer szerepel: True
+Gamma értéke: 2.0999999999999996
