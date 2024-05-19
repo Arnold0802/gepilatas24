@@ -66,7 +66,7 @@ color_array = np.zeros((6, 9, 3), dtype=np.uint8)  #színkódok tárolása
 color_array_finds = np.empty((6, 9), dtype=object) #felismert színek tárolása
 
 
-mappa = 9
+mappa = 23
 go = 1
 flag = 0
 gammavalue=2.5
