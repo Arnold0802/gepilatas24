@@ -1,6 +1,11 @@
 import cv2
 import numpy as np
 from collections import Counter
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import PatternFill
+from openpyxl.styles import Border, Side
+from openpyxl.styles import Alignment
 
 
 def dominant_color(cell):
@@ -26,21 +31,6 @@ def adjust_gamma(image, gamma=1.5):  # gamma < 1 sötétíti, gamma > 1 világos
     table = np.array([((i / 255.0) ** invGamma) * 255 for i in np.arange(0, 256)]).astype("uint8")
     return cv2.LUT(image, table)
 
-def determine_color_bgr(average_bgr, color_bounds_bgr):
-    b, g, r = average_bgr
-    for color, (lower_bound, upper_bound) in color_bounds_bgr.items():
-        if (lower_bound[0] <= b <= upper_bound[0] and
-            lower_bound[1] <= g <= upper_bound[1] and
-            lower_bound[2] <= r <= upper_bound[2]):
-            return color
-    return "unknown"  # Ha egyik kategóriába sem esik bele
-
-def match_color(hue, saturation, value, color_bounds):
-    for color, bounds in color_bounds.items():
-        (lower_hue, lower_sat, lower_val), (upper_hue, upper_sat, upper_val) = bounds
-        if lower_hue <= hue <= upper_hue and lower_sat <= saturation <= upper_sat and lower_val <= value <= upper_val:
-            return color
-    return "unknown"  # If no color matches
 
 def find_closest_color(color, colors):
     min_distance = float('inf')
@@ -52,42 +42,13 @@ def find_closest_color(color, colors):
             closest_color_name = name
     return closest_color_name
 
-############################################################################################################################################
+def rgb_to_hex(rgb):
+    # Az rgb egy lista vagy tuple három decimális értékkel: [67, 154, 101]
+    return '{:02X}{:02X}{:02X}'.format(rgb[0], rgb[1], rgb[2])
 
-##########          HLS
-
-# RGB színek HLS színtérbe konvertálása
-def rgb_to_hls(rgb_color):
-    rgb_color = np.reshape(rgb_color, (1, 1, 3)).astype(np.uint8)
-    hls_color = cv2.cvtColor(rgb_color, cv2.COLOR_RGB2HLS)
-    return hls_color[0, 0, :]
-
-def find_closest_color_hls(color, colors_hls):
-    color_hls = rgb_to_hls(color)
-    min_distance = float('inf')
-    closest_color_name = None
-    
-    for name, value in colors_hls.items():
-        distance = np.linalg.norm(color_hls - value)
-        if distance < min_distance:
-            min_distance = distance
-            closest_color_name = name
-            
-    return closest_color_name
-
-############################################################################################################################################
 
 minimum_area = 100
 
-# Színek 
-color_bounds_bgr = {
-    'white': ((120, 120, 120), (255, 255, 255)),
-    'yellow': ((0, 150, 255), (30, 255, 255)),
-    'orange': ((0, 100, 200), (50, 180, 255)),
-    'blue': ((120, 0, 0), (255, 100, 100)),
-    'red': ((0, 0, 120), (75, 75, 255)),
-    'green': ((0, 120, 0), (100, 255, 100))
-}
 
 # Definiáljuk a 6 szín RGB kódját
 colors = {
@@ -101,12 +62,18 @@ colors = {
 
 # 6x9-es tömb létrehozása, ahol minden elem egy 3 elemű RGB színkód (kezdetben 0-val inicializálva)
 color_array = np.zeros((6, 9, 3), dtype=np.uint8)  #színkódok tárolása
+#ez meg a párja, itt a felismert színeket tárolom
 color_array_finds = np.empty((6, 9), dtype=object) #felismert színek tárolása
 
 
-#k=0
+mappa = 3
+
+gammavalue=1.9
+
+log_path = str(mappa)+"/log.txt"
+
 for k in range (0,6):
-    imgneve = "1/"+str(k+1)+".jpg"
+    imgneve = str(mappa)+"/"+str(k+1)+".jpg"
 
     image = cv2.imread(imgneve)
     pirosdb = 0
@@ -172,14 +139,14 @@ for k in range (0,6):
     # Eredeti kép, bounding box és kivágott kép megjelenítése
     #cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)  # Bounding box kirajzolása az eredeti képre
     #cv2.imshow('Original Image with Bounding Box', image)
-    #cv2.imshow('Cropped Image', cropped_image)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
+    cv2.imshow('Cropped Image', cropped_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     #mivel már nem a 9 négyzet színeinek átlagát veszem, hanem egy megadott területből veszek mintát, fölöslegessé vált a maszkolás, így kivettem ezeket a lépéseket
 
-
-    gamma_corrected = adjust_gamma(cropped_image, gamma=1.9)
+    
+    gamma_corrected = adjust_gamma(cropped_image, gammavalue)
 
     #cv2.imshow('Gamma Corrected', gamma_corrected)
     #cv2.waitKey(0)
@@ -233,7 +200,7 @@ for k in range (0,6):
 
         image = cells[i]
         namestr= "cella"+str(i)
-        #cv2.imshow(namestr,image)
+        cv2.imshow(namestr,image)
 
 
         height, width = image.shape[:2]
@@ -281,8 +248,8 @@ for k in range (0,6):
 
 
 
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
 # Tömb összes elemének megjelenítése (opcionális)
 print("Teljes szín tömb:")
@@ -304,3 +271,107 @@ is_unique = len(unique_elements) == len(fifth_elements)
 print("Az 5. elemek minden oszlopból:", fifth_elements)
 #print("Egyedi elemek:", unique_elements)
 print("Minden szín csak egyszer szerepel:", is_unique)
+
+#log fájl írása
+with open(log_path, 'w') as file:
+    file.write("Teljes szín tömb:\n")
+    file.write(str(color_array))
+    file.write("\n")
+    file.write(str(color_array_finds))
+    file.write("\n")
+    file.write("Színek száma:\n")
+    for color, count in color_counts.items():
+        file.write(f"{color}: {count}")
+    file.write("\n")
+    file.write(f"Az 5. elemek minden oszlopból: {fifth_elements}\n")
+    file.write(f"Minden szín csak egyszer szerepel: {is_unique}")
+
+
+
+
+# Excel munkafüzet létrehozása
+wb = Workbook()
+ws = wb.active
+
+# Vékony fekete keret
+thin_border = Border(
+    left=Side(style='thin', color='000000'),
+    right=Side(style='thin', color='000000'),
+    top=Side(style='thin', color='000000'),
+    bottom=Side(style='thin', color='000000')
+)
+
+# Beállítjuk az első 12 sor magasságát 50 pixelre
+for i in range(1, 13):
+    ws.row_dimensions[i].height = 56.25
+
+# Beállítjuk az első 9 oszlop szélességét 50 pixelre
+for i in range(1, 10):
+    col_letter = get_column_letter(i)
+    ws.column_dimensions[col_letter].width = 10
+
+offsets=[
+    [4,4],
+    [4,1],
+    [1,4],
+    [7,4],
+    [4,7],
+    [4,10]
+    ]
+
+#if is_unique:
+for k in range (0,6):
+    #1-es oldal:
+    x=offsets[k][0] #oszlop offset
+    y=offsets[k][1] #sor offset
+    db=0
+    for i in range (0,3):
+        for j in range (0,3):
+            rgb= color_array[k,db]
+            hex_color = rgb_to_hex(rgb)
+            fill_color = PatternFill(start_color=hex_color, end_color=hex_color, fill_type='solid')
+            cell = ws.cell(row = i+y, column=j+x)
+            cell.fill = fill_color
+            cell.border = thin_border
+            db+=1
+for k in range (0,6):
+    #1-es oldal:
+    x=offsets[k][0]+11 #oszlop offset
+    y=offsets[k][1] #sor offset
+    db=0
+    for i in range (0,3):
+        for j in range (0,3):
+            cell = ws.cell(row = i+y, column=j+x)
+            cell.value = color_array_finds[k,db]
+            cell.border = thin_border
+            db+=1
+
+for k in range (0,6):
+    #1-es oldal:
+    x=offsets[k][0]+22 #oszlop offset
+    y=offsets[k][1] #sor offset
+    db=0
+    for i in range (0,3):
+        for j in range (0,3):
+            cell = ws.cell(row = i+y, column=j+x)
+            temp = "R "+str(color_array[k][db][0])+"\n"+"G "+str(color_array[k][db][1])+"\n"+"B "+str(color_array[k][db][2])+"\n"
+            cell.value = temp
+            cell.border = thin_border
+            cell.alignment = Alignment(wrap_text=True)
+            db+=1
+
+x=0
+y=14
+
+for color, count in color_counts.items():
+    cell = ws.cell(row = y, column = 1)
+    temp=str(f"{color}: {count}")
+    cell.value = temp
+    y+=1
+
+            
+
+# Eredmények mentése Excel fájlba
+savepath = str(mappa)+"/results"+str(mappa)+".xlsx"
+wb.save(savepath)
+print("kész")

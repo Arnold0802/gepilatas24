@@ -66,9 +66,9 @@ color_array = np.zeros((6, 9, 3), dtype=np.uint8)  #színkódok tárolása
 color_array_finds = np.empty((6, 9), dtype=object) #felismert színek tárolása
 
 
-mappa = 1
+mappa = 3
 
-gammavalue=2.1
+gammavalue=1.9
 
 log_path = str(mappa)+"/log.txt"
 
