@@ -1,0 +1,3 @@
+python
+openpyxl
+opencv-python (ez telepíti a numpy-t is)

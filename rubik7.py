@@ -66,13 +66,13 @@ color_array = np.zeros((6, 9, 3), dtype=np.uint8)  #színkódok tárolása
 color_array_finds = np.empty((6, 9), dtype=object) #felismert színek tárolása
 
 
-mappa = 3
+mappa = 15
 
 gammavalue=1.9
 
 log_path = str(mappa)+"/log.txt"
 
-for k in range (0,6):
+for k in range (0,1):
     imgneve = str(mappa)+"/"+str(k+1)+".jpg"
 
     image = cv2.imread(imgneve)
@@ -93,6 +93,7 @@ for k in range (0,6):
     _, thresholded_image = cv2.threshold(gray_image, 50, 255, cv2.THRESH_BINARY_INV)
     #bw_image = cv2.bitwise_not(thresholded_image)
     #cv2.imshow('Csak 50% fekete', thresholded_image)
+    #cv2.imwrite('fekete-feher.jpg', thresholded_image)
     #cv2.waitKey(0)
     #cv2.destroyAllWindows()
 
@@ -104,6 +105,7 @@ for k in range (0,6):
 
     # Megjelenítés
     #cv2.imshow('Fekete területek kijelölve', image)
+    #cv2.imwrite('konturok.jpg', image)
     #cv2.waitKey(0)
     #cv2.destroyAllWindows()    
 
@@ -130,6 +132,7 @@ for k in range (0,6):
 
     # Kép megjelenítése
     #cv2.imshow('Bounding Square', image)
+    #cv2.imwrite('box.jpg', image)
     #cv2.waitKey(0)
     #cv2.destroyAllWindows()
 
@@ -139,9 +142,9 @@ for k in range (0,6):
     # Eredeti kép, bounding box és kivágott kép megjelenítése
     #cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)  # Bounding box kirajzolása az eredeti képre
     #cv2.imshow('Original Image with Bounding Box', image)
-    cv2.imshow('Cropped Image', cropped_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    #cv2.imshow('Cropped Image', cropped_image)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
 
     #mivel már nem a 9 négyzet színeinek átlagát veszem, hanem egy megadott területből veszek mintát, fölöslegessé vált a maszkolás, így kivettem ezeket a lépéseket
 
@@ -165,9 +168,10 @@ for k in range (0,6):
         cv2.line(image, (i * width // 3, 0), (i * width // 3, height), (0, 255, 0), thickness=2)
 
     # Kép megjelenítése
-    #cv2.imshow('Divided Image', image)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
+    cv2.imshow('Divided Image', image)
+    cv2.imwrite('divided.jpg', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     # Kép mentése
     #cv2.imwrite('divided_image.jpg', image)
